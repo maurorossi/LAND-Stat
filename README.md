@@ -1,2 +1,2 @@
-# land-stat-gep
-land-stat GEP implementation
+# LAND-Stat
+LANDslide Statistics
