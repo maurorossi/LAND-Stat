@@ -1,2 +1,2 @@
 # LAND-Stat
-LANDslide Statistics
+LANDslide Size Statistics Evaluation
