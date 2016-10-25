@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.terradue</groupId>
-  <artifactId>myapp</artifactId>
+  <groupId>maurorossi</groupId>
+  <artifactId>LAND-Stat</artifactId>
   <packaging>pom</packaging>
-  <name>myapp</name>
+  <name>LAND-Stat</name>
   <parent>
-    <groupId>com.terradue</groupId>
+    <groupId>maurorossi</groupId>
     <artifactId>dcs-R-parent</artifactId>
     <version>2.0.0</version>
   </parent>
-  <description>test</description>
+  <description>test_landstat</description>
   <version>1.0-SNAPSHOT</version>
   <properties>
     <summary>summary test</summary>
@@ -19,9 +19,9 @@
     <yumRepo>com.terradue</yumRepo>
   </properties>
   <scm>
-    <connection>scm:git:ssh://git@github.com/com.terradue/myapp</connection>
-    <developerConnection>scm:git:ssh://git@github.com/com.terradue/myapp</developerConnection>
-    <url>https://github.com/com.terradue/myapp</url>
+    <connection>scm:git:ssh://git@github.com/maurorossi/LAND-Stat</connection>
+    <developerConnection>scm:git:ssh://git@github.com/maurorossi/LAND-Stat</developerConnection>
+    <url>https://github.com/maurorossi/LAND-Stat</url>
     <tag>HEAD</tag>
   </scm>
   <profiles>
