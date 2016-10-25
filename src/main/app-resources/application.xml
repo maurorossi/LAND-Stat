@@ -1,6 +1,6 @@
 <application id="landstat">
   <jobTemplates>
-    <jobTemplate id="template1">
+    <jobTemplate id="job_template_landstat">
       <streamingExecutable>/application/nodes/run.R</streamingExecutable>
       <defaultParameters>
         <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test</parameter>
@@ -10,7 +10,7 @@
   <workflow id="test_workflow" title="Test landstat" abstract="This test ....">
     <workflowVersion>1.0</workflowVersion>
     <node id="node1">
-      <job id="template1"/>
+      <job id="job_template_landstat"/>
         <sources>
         <!-- <source refid="file:urls">/tmp/inputs</source> -->
         <!-- <source refid="string:list">input1,input2<source> -->
