@@ -18,7 +18,8 @@
         -->
         </sources>
         <parameters>
-        <parameter id="param1">value3</parameter>
+         <parameter id="param1">valoreparametro1</parameter>
+         <parameter id="param2">valoreparametro2</parameter>
         </parameters>
     </node>
   </workflow>
