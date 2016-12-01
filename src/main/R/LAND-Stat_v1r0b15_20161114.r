@@ -7,7 +7,7 @@
 ####            LANDslide size Statistics evaluation                 ####
 ####                           IRPI CNR                              ####
 ####                    MAURO ROSSI - IRPI CNR                       ####
-####                  v1r0b14 - 25 October 2016                      ####
+####                  v1r0b15 - 16 November 2016                     ####
 ####                                                                 ####
 #### Copyright (C) 2016 Mauro Rossi                                  ####
 ####                                                                 ####
@@ -60,7 +60,7 @@
 
 rm(list=(ls()))
 graphics.off()
-workdir<-"X:/R/MLE_LandslideArea/Run_Romania_20150525" # For windows
+workdir<-"X:/R/MLE_LandslideArea/Run_Volume_Sandra_20161109/Salzberg" # For windows
 #workdir<-"/media/disco_dati/R/MLE_LandslideArea/Run_Romania_20150525  # For linux
 setwd(workdir)
 #setwd("/media/disco_dati/R/MLE_LandslideArea/TEST_KCL_20140211")
@@ -74,21 +74,22 @@ names(configuration)
 
 
 ### Selcting the type of data to be analyzed
-xlabel<-expression(A~~(m^{2})) # For area
-#xlabel<-expression(V~~(m^{3})) # For volume
+#xlabel<-expression(A~~(m^{2})) # For area
+xlabel<-expression(V~~(m^{3})) # For volume
 #xlabel<-expression(X~~(m)) # For a length  
 #xlabel<-expression(frac(L, W)~~bgroup("(",frac(m,m),")")) # For a length/width ratio
 
 
 ks_boot_samples<-1000
 use_shape<-FALSE
-name_file_data<-"Data_area_sqm_Miletin.txt" # .txt or .shp if use_shape=TRUE
+name_file_data<-"Data1_nocolname.txt" # .txt or .shp if use_shape=TRUE
 use_shape_field_stat<-TRUE
 shape_field_stat<-"area_sqrm"
 
 bin_method<-c("Sturges") # "Sturges" or "scott" or "FD"
 
-
+cdf_percentiles<-c(0.01,0.05,0.25,0.5,0.75,0.95,0.99)
+executing_CDF_sensitivity_analysis<-FALSE
 
 if (use_shape==FALSE)
   {
@@ -242,7 +243,9 @@ pdoublepareto <- function(x, alpha.par, beta.par, t.par, c.par, m.par, FUN=FALSE
         denfun<-(beta.par)/(t.par*(1-((1+(m.par/t.par)^(-alpha.par))/(1+(c.par/t.par)^(-alpha.par)))^(beta.par/alpha.par)))*(((1+(m.par/t.par)^(-alpha.par))^(beta.par/alpha.par))/((1+(x/t.par)^(-alpha.par))^(1+(beta.par/alpha.par))))*((x/t.par)^(-alpha.par-1))
         return(denfun)
         }
-      fun<-integrate(f=density.function,lower=0.0001,upper=x)
+      #fun<-integrate(f=density.function,lower=0.0001,upper=x)
+      fun<-integrate(f=density.function,lower=c.par,upper=x)
+      
       return(fun$value)
       }
     cumdensity.function<-Vectorize(cumdensity.function)
@@ -261,14 +264,16 @@ pdoublepareto <- function(x, alpha.par, beta.par, t.par, c.par, m.par, FUN=FALSE
         fun<-(beta.par)/(t.par*(1-((1+(m.par/t.par)^(-alpha.par))/(1+(c.par/t.par)^(-alpha.par)))^(beta.par/alpha.par)))*(((1+(m.par/t.par)^(-alpha.par))^(beta.par/alpha.par))/((1+(x/t.par)^(-alpha.par))^(1+(beta.par/alpha.par))))*((x/t.par)^(-alpha.par-1))
         return(fun)
         }
-      p.doublepareto<-integrate(f=density.function,lower=0.0001,upper=x)
+      #p.doublepareto<-integrate(f=density.function,lower=0.0001,upper=x)
+      p.doublepareto<-integrate(f=density.function,lower=c.par,upper=x)
+      
       return(p.doublepareto$value)
       }
     cumdensity.function<-Vectorize(cumdensity.function)
     return(cumdensity.function(x))	
     }
   }
-# 
+ 
 # ## Testing pdoublepareto and ddoublepareto
 # c<-pdoublepareto(alpha.par=1.8, beta.par=1.5, t.par=10000, c.par=50, m.par=100000, FUN=TRUE)
 # c(seq(50,100000,10))
@@ -330,6 +335,46 @@ rdoublepareto <- function(n, alpha.par, beta.par, t.par, c.par, m.par)
 #   misusloglikelihood.doublepareto<--sum(log((beta.par)/(t.par*(1-((1+(m.par/t.par)^(-alpha.par))/(1+(c.par/t.par)^(-alpha.par)))^(beta.par/alpha.par)))*(((1+(m.par/t.par)^(-alpha.par))^(beta.par/alpha.par))/((1+(x/t.par)^(-alpha.par))^(1+(beta.par/alpha.par))))*((x/t.par)^(-alpha.par-1))))
 #   return(misusloglikelihood.doublepareto)
 #   }
+
+qdoublepareto <- function(x, alpha.par, beta.par, t.par, c.par, m.par, lower.par, upper.par,  FUN=FALSE)
+{
+  if(FUN==TRUE)
+  {
+    inverse<-function (f, lower = lower.par, upper = upper.par) # probably better use interval with extendInt=TRUE
+    {
+      function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[1]
+    }
+    alpha.par=alpha.par
+    beta.par=beta.par
+    t.par=t.par
+    c.par=c.par
+    m.par=m.par
+    quantile.function<-inverse(pdoublepareto(alpha.par=alpha.par, beta.par=beta.par,t.par=t.par,c.par=c.par,m.par=m.par,FUN=TRUE), lower=lower.par, upper=upper.par)
+    quantile.function<-Vectorize(quantile.function)
+    return(quantile.function)  
+  } else
+  {
+    inverse<-function (f, lower = lower.par, upper = upper.par) # probably better use interval with extendInt=TRUE
+    {
+      function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[1]
+    }
+    alpha.par=alpha.par
+    beta.par=beta.par
+    t.par=t.par
+    c.par=c.par
+    m.par=m.par
+    quantile.function<-inverse(pdoublepareto(alpha.par=alpha.par, beta.par=beta.par,t.par=t.par,c.par=c.par,m.par=m.par,FUN=TRUE), lower=lower.par, upper=upper.par)
+    quantile.function<-Vectorize(quantile.function)
+    quantile.values<-unlist(quantile.function(x))
+    names(quantile.values)<-x
+    return(quantile.values)	
+  }
+}
+
+### Testing qdoublepareto
+#qdoublepareto(x=c(0.01,0.05,0.25,0.5,0.75,0.95,0.99),alpha.par=1.3,beta.par=1.1, t.par=0.55, c.par=0.01, m.par=1000, lower.par=0.001, upper.par=1000,FUN=FALSE)
+#qdoublepareto(x=c(0.01,0.05,0.25,0.5,0.75,0.95,0.99),alpha.par=1.3,beta.par=1.1, t.par=0.55, c.par=0.01, m.par=1000, lower.par=0.001, upper.par=1000,FUN=TRUE)(c(0.01,0.05,0.25,0.5,0.75,0.95,0.99))
+
 
 
 mll.doublepareto <- function(x, alpha.par, beta.par, t.par, c.par, m.par)
@@ -450,6 +495,42 @@ rdoublepareto.simplified <- function(n, alpha.par, beta.par, t.par)
 # lines(seq(0,100000,10),ddoublepareto.simplified(seq(0,100000,10),alpha.par=1.8, beta.par=1.5, t.par=10000),col="red")
 # ## verify with observed data and ks test
 
+qdoublepareto.simplified <- function(x, alpha.par, beta.par, t.par, lower.par, upper.par, FUN=FALSE)
+  {
+  if(FUN==TRUE)
+    {
+    inverse<-function (f, lower = lower.par, upper = upper.par) # probably better use interval with extendInt=TRUE
+      {
+      function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[1]
+      }
+    alpha.par=alpha.par
+    beta.par=beta.par
+    t.par=t.par
+    quantile.function<-inverse(pdoublepareto.simplified(alpha.par=alpha.par, beta.par=beta.par,t.par=t.par,FUN=TRUE), lower=lower.par, upper=upper.par)
+    quantile.function<-Vectorize(quantile.function)
+    return(quantile.function)  
+    } else
+    {
+    inverse<-function (f, lower = lower.par, upper = upper.par) # probably better use interval with extendInt=TRUE
+      {
+      function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[1]
+      }
+    alpha.par=alpha.par
+    beta.par=beta.par
+    t.par=t.par
+    quantile.function<-inverse(pdoublepareto.simplified(alpha.par=alpha.par, beta.par=beta.par,t.par=t.par,FUN=TRUE), lower=lower.par, upper=upper.par)
+    quantile.function<-Vectorize(quantile.function)
+    quantile.values<-unlist(quantile.function(x))
+    names(quantile.values)<-x
+    return(quantile.values)	
+    }
+  }
+  
+### Testing qdoublepareto.simplified
+#qdoublepareto.simplified(x=c(0.01,0.05,0.25,0.5,0.75,0.95,0.99),alpha.par=1.3,beta.par=1.1, t.par=0.55, lower.par=0.001, upper.par=1000,FUN=FALSE)
+#qdoublepareto.simplified(x=c(0.01,0.05,0.25,0.5,0.75,0.95,0.99),alpha.par=1.3,beta.par=1.1, t.par=0.55, lower.par=0.001, upper.par=1000,FUN=TRUE)(c(0.01,0.05,0.25,0.5,0.75,0.95,0.99))
+
+
 mll.doublepareto.simplified <- function(x, alpha.par, beta.par, t.par)
   {
   misusloglikelihood.doublepareto.simplified<--sum(log((beta.par*(t.par^alpha.par))/((1+((x/t.par)^(-alpha.par)))^(1+(beta.par/alpha.par))*(x)^(alpha.par+1))))
@@ -568,6 +649,43 @@ rinversegamma <- function(n, alpha.par, eta.par, lambda.par)
 # lines(seq(0.2,100000,10),dinversegamma(seq(0.2,100000,10),alpha.par=1, eta.par=8, lambda.par=30),col="red")
 # ## verify with observed data and ks test
 
+qinversegamma <- function(x, alpha.par=alpha, eta.par=eta, lambda.par=lambda, lower.par, upper.par, FUN=FALSE)
+{
+  if(FUN==TRUE)
+  {
+    inverse<-function (f, lower = lower.par, upper = upper.par) # probably better use interval with extendInt=TRUE
+    {
+      function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[1]
+    }
+    alpha.par=alpha.par
+    eta.par=eta.par
+    lambda.par=lambda.par
+    quantile.function<-inverse(pinversegamma(alpha.par=alpha.par, eta.par=eta.par,lambda.par=lambda.par,FUN=TRUE), lower=lower.par, upper=upper.par)
+    quantile.function<-Vectorize(quantile.function)
+    return(quantile.function)  
+  } else
+  {
+    inverse<-function (f, lower = lower.par, upper = upper.par) # probably better use interval with extendInt=TRUE
+    {
+      function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[1]
+    }
+    alpha.par=alpha.par
+    eta.par=eta.par
+    lambda.par=lambda.par
+    quantile.function<-inverse(pinversegamma(alpha.par=alpha.par, eta.par=eta.par,lambda.par=lambda.par,FUN=TRUE), lower=lower.par, upper=upper.par)
+    quantile.function<-Vectorize(quantile.function)
+    quantile.values<-unlist(quantile.function(x))
+    names(quantile.values)<-x
+    return(quantile.values)	
+  }
+}
+
+### Testing qinversegamma
+#qinversegamma(x=c(0.01,0.05,0.25,0.5,0.75,0.95,0.99),alpha.par=1.3,eta.par=0.1, lambda.par=1, lower.par=0.001, upper.par=1000,FUN=FALSE)
+#qinversegamma(x=c(0.01,0.05,0.25,0.5,0.75,0.95,0.99),alpha.par=1.3,eta.par=0.1, lambda.par=1, lower.par=0.001, upper.par=1000,FUN=TRUE)(c(0.01,0.05,0.25,0.5,0.75,0.95,0.99))
+
+
+
 mll.inversegamma <- function(x, alpha.par, eta.par, lambda.par)
   {
   misusloglikelihood.inversegamma<--sum(log(((lambda.par^(2*alpha.par))/gamma(alpha.par))*((1/(x+(eta.par^2)))^(alpha.par+1))*exp(-(lambda.par^2)/(x+(eta.par^2)))))
@@ -600,12 +718,28 @@ if (configuration[29,4]=="YES") (range.plot.density<-as.numeric(configuration[29
 
 for (series in 1:dim(data.series)[2])
    {
+   # series<-1
    no.events<-length(na.omit(data.series[,series]))
    print(names(data.series)[series])
    log.data.series<-sort(log(na.omit(data.series[,series]),base=10))
 
    c.par.value<-min(na.omit(data.series[,series]))
    m.par.value<-max(na.omit(data.series[,series]))   
+   
+# ----------------------------- ECDF estimation  ----------------------------- #
+   print(paste("ECDF -",names(data.series)[series]))
+   ecdf_function<-ecdf(data.series[,series])
+   
+   #log_cycles_range<-c(floor(log(min(na.omit(data.series[,series])),10)),ceiling(log(max(na.omit(data.series[,series])),10)))
+   #data.series.synthetic<-c(10^log_cycles_range[1],sort((seq(1,10,0.1)%*%t(10^(log_cycles_range[1]:log_cycles_range[2])))[-1,]))
+   #data.series.synthetic<-c(min(na.omit(data.series[,series])),data.series.synthetic[which(data.series.synthetic>min(na.omit(data.series[,series])) & data.series.synthetic<max(na.omit(data.series[,series])))],max(na.omit(data.series[,series])))
+   
+   pdf(file=paste("ECDF_plot.pdf",sep=""))
+   #x11()
+   plot(data.series[,series],ecdf_function(data.series[,series]),log="x",type="l",main="ECFD", ylab="ECDF", xlab=xlabel,col="blue",xlim=range.plot.area,ylim=c(0,1))
+   points(data.series[,series],ecdf_function(data.series[,series]),pch=21,bg="lightskyblue3",col="navyblue",cex=0.9)
+   dev.off()
+   
    
 # ----------------------------- HDE estimation  ----------------------------- #
    print(paste("HDE -",names(data.series)[series]))
@@ -1018,7 +1152,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#countsamples<-1
 		c.par.value.sample<-c.par.value
 		m.par.value.sample<-m.par.value
-   		print(paste("HDE -",names(data.series)[series],"-> Sample:",countsamples))
+   	print(paste("HDE -",names(data.series)[series],"-> Sample:",countsamples))
 		data.series.sample<-sample(data.series[,series],replace=TRUE)
 		no.events.sample<-length(data.series.sample)
 		log.data.series.sample<-log(data.series.sample,10)
@@ -1136,7 +1270,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -1164,7 +1298,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -1191,7 +1325,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -1654,7 +1788,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -1683,7 +1817,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -1711,7 +1845,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -1813,6 +1947,31 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
    mtext(paste("CDF MLE Double Pareto Simplified -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
    dev.off()
    
+   pdf(file = paste("CDF_MLE_DPS_EntireRange_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
+   data.series.synthetic.cdf<-c(10^log_cycles_range[1],sort((seq(1,10,0.1)%*%t(10^(log_cycles_range[1]:log_cycles_range[2])))[-1,]))
+   cdf.mle.data.series.dps.entire.range<-pdoublepareto.simplified(x=data.series.synthetic.cdf, alpha.par=mle.data.series.dps@coef[1], beta.par=mle.data.series.dps@coef[2], t.par=mle.data.series.dps@coef[3])
+
+   plot(data.series.synthetic,cdf.mle.data.series.dps, log="x", main="Cumulative distribution function", ylab=paste("Cumulative probability density",sep=""), xlab=xlabel,type="l",xlim=range.plot.area,ylim=c(0,1),xaxt="n",yaxt="n",col="dark green")
+   index.cdf.mle.data.fill.min<-which(data.series.synthetic.cdf < min(data.series.synthetic))
+   lines(data.series.synthetic.cdf[index.cdf.mle.data.fill.min],cdf.mle.data.series.dps.entire.range[index.cdf.mle.data.fill.min],lty="dashed",col="dark green")
+   index.cdf.mle.data.fill.max<-which(data.series.synthetic.cdf > max(data.series.synthetic))
+   lines(data.series.synthetic.cdf[index.cdf.mle.data.fill.max],cdf.mle.data.series.dps.entire.range[index.cdf.mle.data.fill.max],lty="dashed",col="dark green")
+   cdf.percentiles.sizes.qdoublepareto.simplified<-qdoublepareto.simplified(x=cdf_percentiles,alpha.par=mle.data.series.dps@coef[1], beta.par=mle.data.series.dps@coef[2], t.par=mle.data.series.dps@coef[3],lower.par=uniroot.range[1]/10, upper.par=uniroot.range[2]*10,FUN=FALSE)
+   points(cdf.percentiles.sizes.qdoublepareto.simplified,cdf_percentiles,pch=21,bg="forestgreen",col="black")
+   lines(cdf.percentiles.sizes.qdoublepareto.simplified,cdf_percentiles,type="h",lty="dotted",col="forestgreen")
+   text(cdf.percentiles.sizes.qdoublepareto.simplified, cdf_percentiles, labels=paste("(",signif(cdf.percentiles.sizes.qdoublepareto.simplified,2),",",cdf_percentiles,")",sep=""), cex= 0.6,pos=3)
+   axis(side=1,at=at.x,label=sciNotation(at.x,1))
+   at.y.cdf<-seq(0,1,0.1)
+   at.y.tick.cdf<-seq(0,1,0.01)
+   axis(side=2,at=at.y.cdf,label=at.y.cdf)
+   axis(1, at.x.tick, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(2, at.y.tick.cdf, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(3, at.x.tick, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(4, at.y.tick.cdf, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   mtext(paste("CDF MLE Double Pareto Simplified -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   dev.off()
+   
+   
    #### MLE using Double Pareto (Fixing c.par and m.par)
 
    # Default paramenter value, specified_by_user == "NO" in configuration.txt file
@@ -1888,6 +2047,31 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
    mtext(paste("CDF MLE Double Pareto -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
    dev.off()
 
+   pdf(file = paste("CDF_MLE_DP_EntireRange_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
+   data.series.synthetic.cdf<-c(10^log_cycles_range[1],sort((seq(1,10,0.1)%*%t(10^(log_cycles_range[1]:log_cycles_range[2])))[-1,]))
+   cdf.mle.data.series.dp.entire.range<-pdoublepareto(x=data.series.synthetic.cdf, alpha.par=mle.results[5,1],beta.par=mle.results[6,1],t.par=mle.results[7,1],c.par=mle.results[8,1],m.par=mle.results[9,1])
+   plot(data.series.synthetic,cdf.mle.data.series.dp, log="x", main="Cumulative distribution function", ylab=paste("Cumulative probability density",sep=""), xlab=xlabel,type="l",xlim=range.plot.area,ylim=c(0,1),xaxt="n",yaxt="n",col="red")
+   #index.cdf.mle.data.fill.min<-which(data.series.synthetic.cdf < min(data.series.synthetic))
+   index.cdf.mle.data.fill.min<-which(data.series.synthetic.cdf < min(data.series.synthetic) & data.series.synthetic.cdf >= mle.results[8,1]) # only for DP
+   lines(data.series.synthetic.cdf[index.cdf.mle.data.fill.min],cdf.mle.data.series.dp.entire.range[index.cdf.mle.data.fill.min],lty="dashed",col="red")
+   #index.cdf.mle.data.fill.max<-which(data.series.synthetic.cdf > max(data.series.synthetic))
+   index.cdf.mle.data.fill.max<-which(data.series.synthetic.cdf > max(data.series.synthetic) & data.series.synthetic.cdf <= mle.results[9,1]) # only for DP
+   lines(data.series.synthetic.cdf[index.cdf.mle.data.fill.max],cdf.mle.data.series.dp.entire.range[index.cdf.mle.data.fill.max],lty="dashed",col="red")
+   cdf.percentiles.sizes.qdoublepareto<-qdoublepareto(x=cdf_percentiles,alpha.par=mle.results[5,1],beta.par=mle.results[6,1],t.par=mle.results[7,1],c.par=mle.results[8,1],m.par=mle.results[9,1],lower.par=uniroot.range[1]/100, upper.par=uniroot.range[2]*100,FUN=FALSE)
+   points(cdf.percentiles.sizes.qdoublepareto,cdf_percentiles,pch=21,bg="red",col="black")
+   lines(cdf.percentiles.sizes.qdoublepareto,cdf_percentiles,type="h",lty="dotted",col="red")
+   text(cdf.percentiles.sizes.qdoublepareto, cdf_percentiles, labels=paste("(",signif(cdf.percentiles.sizes.qdoublepareto,2),",",cdf_percentiles,")",sep=""), cex= 0.6,pos=3)
+   axis(side=1,at=at.x,label=sciNotation(at.x,1))
+   at.y.cdf<-seq(0,1,0.1)
+   at.y.tick.cdf<-seq(0,1,0.01)
+   axis(side=2,at=at.y.cdf,label=at.y.cdf)
+   axis(1, at.x.tick, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(2, at.y.tick.cdf, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(3, at.x.tick, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(4, at.y.tick.cdf, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   mtext(paste("CDF MLE Double Pareto -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   dev.off()
+   
    
    #### MLE using Inverse gamma
    # Default paramenter value, specified_by_user == "NO" in configuration.txt file
@@ -1968,6 +2152,32 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
    plot(data.series.synthetic,cdf.mle.data.series.ig, log="x", main="Cumulative distribution function", ylab=paste("Cumulative probability density",sep=""), xlab=xlabel,type="l",col="violet",xlim=range.plot.area,ylim=c(0,1))
    mtext(paste("CDF MLE Inverse Gamma -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
    dev.off()
+   
+   
+   pdf(file = paste("CDF_MLE_IG_EntireRange_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
+   data.series.synthetic.cdf<-c(10^log_cycles_range[1],sort((seq(1,10,0.1)%*%t(10^(log_cycles_range[1]:log_cycles_range[2])))[-1,]))
+   cdf.mle.data.series.ig.entire.range<-pinversegamma(x=data.series.synthetic.cdf, alpha.par=mle.results[11,1], eta.par=mle.results[12,1], lambda.par=mle.results[13,1])
+   
+   plot(data.series.synthetic,cdf.mle.data.series.ig, log="x", main="Cumulative distribution function", ylab=paste("Cumulative probability density",sep=""), xlab=xlabel,type="l",xlim=range.plot.area,ylim=c(0,1),xaxt="n",yaxt="n",col="violet")
+   index.cdf.mle.data.fill.min<-which(data.series.synthetic.cdf < min(data.series.synthetic))
+   lines(data.series.synthetic.cdf[index.cdf.mle.data.fill.min],cdf.mle.data.series.ig.entire.range[index.cdf.mle.data.fill.min],lty="dashed",col="violet")
+   index.cdf.mle.data.fill.max<-which(data.series.synthetic.cdf > max(data.series.synthetic))
+   lines(data.series.synthetic.cdf[index.cdf.mle.data.fill.max],cdf.mle.data.series.ig.entire.range[index.cdf.mle.data.fill.max],lty="dashed",col="violet")
+   cdf.percentiles.sizes.qinversegamma<-qinversegamma(x=cdf_percentiles, alpha.par=mle.results[11,1], eta.par=mle.results[12,1], lambda.par=mle.results[13,1],lower.par=uniroot.range[1]/10, upper.par=uniroot.range[2]*10,FUN=FALSE)
+   points(cdf.percentiles.sizes.qinversegamma,cdf_percentiles,pch=21,bg="violet",col="black")
+   lines(cdf.percentiles.sizes.qinversegamma,cdf_percentiles,type="h",lty="dotted",col="violet")
+   text(cdf.percentiles.sizes.qinversegamma, cdf_percentiles, labels=paste("(",signif(cdf.percentiles.sizes.qinversegamma,2),",",cdf_percentiles,")",sep=""), cex= 0.6,pos=3)
+   axis(side=1,at=at.x,label=sciNotation(at.x,1))
+   at.y.cdf<-seq(0,1,0.1)
+   at.y.tick.cdf<-seq(0,1,0.01)
+   axis(side=2,at=at.y.cdf,label=at.y.cdf)
+   axis(1, at.x.tick, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(2, at.y.tick.cdf, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(3, at.x.tick, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   axis(4, at.y.tick.cdf, labels = NA, lty = 1, lwd = 1, tck = -0.01)
+   mtext(paste("CDF MLE Inverse Gamma -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   dev.off()
+   
 
    # Plot comparison MLE different distribution
 	if (Sys.info()[1] == "Linux") {x11()}
@@ -2143,7 +2353,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -2172,7 +2382,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -2201,7 +2411,7 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 		#if (Sys.info()[1] == "Linux") {x11()}
 		#if (Sys.info()[1] == "Windows") {windows()}
 		#if (Sys.info()[1] == "Darwin") {quartz()}
-		xlabel<-expression(A (m^{2}))
+		#xlabel<-expression(A (m^{2}))
 		ylabel<-paste("Probability density",sep="")
 		plot(NA, NA, log="xy", main="Probability densities", ylab=ylabel, xlab=xlabel,xlim=range.plot.area,ylim=range.plot.density,xaxt="n",yaxt="n")
 		axis(side=1,at=at.x,label=sciNotation(at.x,1))
@@ -2312,6 +2522,13 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
     ks_greater_result[,3:5]<-round(ks_greater_result[,3:5],3)
     write.table(ks_greater_result,file=paste("Bootstrapped_KS_Test_Results_",names(data.series)[series],".txt",sep=''), quote=FALSE, sep = "\t", row.names=FALSE, col.names=TRUE)
 
+    #### Percentile CDF size values estimated using parameters obtained with MLE 
+    cdf.percentiles.sizes.results<-rbind(cdf.percentiles.sizes.qdoublepareto.simplified,cdf.percentiles.sizes.qdoublepareto,cdf.percentiles.sizes.qinversegamma)
+    rownames(cdf.percentiles.sizes.results)<-NULL
+    cdf.percentiles.sizes.results<-data.frame(estimation_function=c("MLE_CDF_DPS_sizes","MLE_CDF_DP_sizes","MLE_CDF_IG_sizes"),cdf.percentiles.sizes.results)
+    colnames(cdf.percentiles.sizes.results)<-c("estimation_function",paste(as.numeric(cdf_percentiles)*100,"th",sep=""))
+    write.table(cdf.percentiles.sizes.results,file=paste("CDF_MLE_PercentileSizes_",names(data.series)[series],".txt",sep=''), quote=FALSE, sep = "\t", row.names=FALSE, col.names=TRUE)
+    
 
   ### Export table probability values
   if (use_shape==FALSE)
@@ -2325,3 +2542,168 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
       writeOGR(data.shape.results,dsn=getwd(),layer=paste("ProbabilityResults_",names(data.series)[series],sep=''),driver="ESRI Shapefile",overwrite_layer=TRUE)
     }
    }
+
+
+### ---------------- CDF sensitivity analysis ---------------- ###
+
+if(executing_CDF_sensitivity_analysis==TRUE)
+  {
+  
+  sample.size.cdf.analysis<-dim(data.series[series])[1]*10
+  data.series.cdf.analysis<-rdoublepareto.simplified(n=sample.size.cdf.analysis, alpha.par=mle.results[1,1], beta.par=mle.results[2,1], t.par=mle.results[3,1])	
+  data.series.synthetic.cdf<-c(10^log_cycles_range[1],sort((seq(1,10,0.1)%*%t(10^(log_cycles_range[1]:log_cycles_range[2])))[-1,]))
+  data.filtering.synthetic.cdf<-c(10^log_cycles_range[1],sort((seq(1,10,1)%*%t(10^(log_cycles_range[1]:log_cycles_range[2])))[-1,]))
+  
+  ### Small size - High-Pass filtering
+  #size.filtering.vector<-data.series.synthetic.cdf[which(data.series.synthetic.cdf<mle.results[4,1])]
+  size.filtering.vector<-data.filtering.synthetic.cdf[which(data.filtering.synthetic.cdf<mle.results[4,1])]
+  results.synthetic.cdf.matrix.small<-matrix(as.numeric(NA),nrow=length(data.series.synthetic.cdf),ncol=length(size.filtering.vector))
+  colnames(results.synthetic.cdf.matrix.small)<-size.filtering.vector
+  
+  results.synthetic.cdf.coefficient.matrix.small<-matrix(as.numeric(NA),nrow=length(size.filtering.vector),ncol=10)
+  colnames(results.synthetic.cdf.coefficient.matrix.small)<-c("alpha","beta","t","alpha_pvalue","beta_pvalue","t_pvalue","nboot_samples","KS_D","KS_pvalue","KS_pvalue_boot")
+
+  data.series.cdf.analysis.filtered.old<-NULL
+  for(count in 1:length(size.filtering.vector))
+    {
+    # count<-1
+    size.filter.value<-size.filtering.vector[count]
+    data.series.cdf.analysis.filtered<-data.series.cdf.analysis[which(data.series.cdf.analysis>size.filter.value)]
+    print(paste("CDF Size filter value: ",size.filter.value,"; Done: ",round(count/length(size.filtering.vector)*100,1),"%",sep=""))
+  
+    if(identical(data.series.cdf.analysis.filtered,data.series.cdf.analysis.filtered.old) | length(data.series.cdf.analysis.filtered)==0) {print("Skipping value");next()}
+    data.series.cdf.analysis.filtered.old<-data.series.cdf.analysis.filtered
+  
+    alpha.range<-c(min(c(hde.results[1,1],kde.results[1,1]))/1.5,max(c(hde.results[1,1],kde.results[1,1]))*1.5)
+    beta.range<-c(min(c(hde.results[2,1],kde.results[2,1]))/1.5,max(c(hde.results[2,1],kde.results[2,1]))*1.5)
+    t.range<-c(min(c(hde.results[3,1],kde.results[2,1]))/1.5,max(c(hde.results[3,1],kde.results[3,1]))*1.5)
+    # Paramenter value specified by the user, specified_by_user == "YES" in configuration.txt file
+    if (configuration[19,4]=="YES") (alpha.range<-as.numeric(configuration[19,2:3]))
+    if (configuration[20,4]=="YES") (beta.range<-as.numeric(configuration[20,2:3]))
+    if (configuration[21,4]=="YES") (t.range<-as.numeric(configuration[21,2:3]))
+    
+    if (inherits(try(mle.cdf.analysis<-mle2(mll.doublepareto.simplified,method="L-BFGS-B",trace=FALSE,lower=c(alpha.par=alpha.range[1], beta.par=beta.range[1],t.par=t.range[1]),upper=c(alpha.par=alpha.range[2], beta.par=beta.range[2],t.par=t.range[2]),start=list(alpha.par=sum(alpha.range)/2, beta.par=sum(beta.range)/2,t.par=sum(t.range)/2),data=list(x=na.omit(data.series.cdf.analysis.filtered)),control=list(maxit=1000000,lmm=5,factr=10^-8,pgtol=0,trace=6,parscale=c(alpha.par=1, beta.par=1,t.par=1))),silent=TRUE),what="try-error"))
+      {
+      print(paste("Warning: MLE not coverged",sep=""))
+      next()
+      }	
+    mle.cdf.analysis.coefficients<-coef(summary(mle.cdf.analysis))[,1]
+    results.synthetic.cdf.coefficient.matrix.small[count,1:3]<-mle.cdf.analysis.coefficients
+    results.synthetic.cdf.coefficient.matrix.small[count,4:6]<-coef(summary(mle.cdf.analysis))[,4]
+    results.synthetic.cdf.matrix.small[,count]<-pdoublepareto.simplified(x=data.series.synthetic.cdf, alpha.par=mle.cdf.analysis.coefficients["alpha.par"], beta.par=mle.cdf.analysis.coefficients["beta.par"], t.par=mle.cdf.analysis.coefficients["t.par"], FUN=FALSE)
+    
+    require(Matching)
+    ks_boot_samples_cdf<-100
+    data.series.cdf.analysis.filtered.random<-rdoublepareto.simplified(n=length(data.series.cdf.analysis.filtered), alpha.par=mle.cdf.analysis.coefficients["alpha.par"], beta.par=mle.cdf.analysis.coefficients["beta.par"], t.par=mle.cdf.analysis.coefficients["t.par"]) 
+    ks.cdf.analysis<-NULL
+    ks.cdf.analysis<-ks.boot(data.series.cdf.analysis.filtered,data.series.cdf.analysis.filtered.random,nboots=ks_boot_samples_cdf,alternative="two.sided")
+    results.synthetic.cdf.coefficient.matrix.small[count,7:10]<-c(ks.cdf.analysis$nboots,ks.cdf.analysis$ks$statistic,ks.cdf.analysis$ks$p.value,ks.cdf.analysis$ks.boot.pvalue)
+    }
+  
+  results.synthetic.cdf.matrix.small<-data.frame(cbind(x=data.series.synthetic.cdf,results.synthetic.cdf.matrix.small))
+  names(results.synthetic.cdf.matrix.small)<-c("x",size.filtering.vector)
+  results.synthetic.cdf.matrix.small<-results.synthetic.cdf.matrix.small[,is.finite(colSums(results.synthetic.cdf.matrix.small))]
+  write.table(results.synthetic.cdf.matrix.small,"CDF_MLE_Sensitivity_SmallSizes_HighPass_Filtering_series.txt",sep="\t",row.names=FALSE,col.names=TRUE)
+  sel.row.finite<-is.finite(rowSums(results.synthetic.cdf.coefficient.matrix.small))
+  results.synthetic.cdf.coefficient.matrix.small<-results.synthetic.cdf.coefficient.matrix.small[sel.row.finite,]
+  results.synthetic.cdf.coefficient.matrix.small<-data.frame(filter=paste("Size>",size.filtering.vector[sel.row.finite],sep=""),results.synthetic.cdf.coefficient.matrix.small)
+  write.table(data.frame(results.synthetic.cdf.coefficient.matrix.small),"CDF_MLE_Sensitivity_SmallSizes_HighPass_Filtering_coefficients.txt",sep="\t",row.names=FALSE,col.names=TRUE)
+ 
+  
+  str(results.synthetic.cdf.matrix.small)
+  library(ggplot2)
+  library(reshape2)
+  d.small<-melt(results.synthetic.cdf.matrix.small, id.vars="x")
+  str(d.small)
+  # Everything on the same plot
+  pdf("CDF_MLE_Sensitivity_SmallSizes_HighPass_Filtering.pdf")
+  min.value.x<-range(results.synthetic.cdf.matrix.small$x)[1]
+  max.value.x<-range(results.synthetic.cdf.matrix.small$x)[2]
+  min.value.at.x<-signif(log10(min.value.x),digits=1)
+  max.value.at.x<-signif(ceiling(log10(max.value.x)),digits=1)
+  at.x<-10^(min.value.at.x:max.value.at.x)
+  at.label.x<-rep(10,length(at.x))^log10(at.x)
+  at.x.tick<-sort(as.numeric((1:9)%*%t(at.label.x)))
+  at.y.cdf<-seq(0,1,0.1)
+  at.y.tick.cdf<-seq(0,1,0.01)
+  ggplot(d.small, aes(x,value,col=variable)) + scale_x_log10(limits=c(min.value.x,max.value.x),breaks=at.label.x,labels=sciNotation(at.x,1)) + scale_y_continuous(breaks=at.y.cdf,labels=at.y.cdf) + geom_line() + labs(title="CDF sensitivity: high-pass filtering",x =xlabel, y = "Cumulative Distribution Function") + scale_colour_discrete(name = "Threshold size") + guides(col=guide_legend(ncol=2))
+  dev.off()
+  
+  ### Large size - Low Pass filtering
+  #size.filtering.vector<-data.series.synthetic.cdf[which(data.series.synthetic.cdf>mle.results[4,1])]
+  size.filtering.vector<-data.filtering.synthetic.cdf[which(data.filtering.synthetic.cdf>mle.results[4,1])]
+  results.synthetic.cdf.matrix.large<-matrix(as.numeric(NA),nrow=length(data.series.synthetic.cdf),ncol=length(size.filtering.vector))
+  colnames(results.synthetic.cdf.matrix.large)<-size.filtering.vector
+  
+  results.synthetic.cdf.coefficient.matrix.large<-matrix(as.numeric(NA),nrow=length(size.filtering.vector),ncol=10)
+  colnames(results.synthetic.cdf.coefficient.matrix.large)<-c("alpha","beta","t","alpha_pvalue","beta_pvalue","t_pvalue","nboot_samples","KS_D","KS_pvalue","KS_pvalue_boot")
+  
+  
+  data.series.cdf.analysis.filtered.old<-NULL
+  for(count in 1:length(size.filtering.vector))
+  {
+    # count<-1
+    size.filter.value<-size.filtering.vector[count]
+    data.series.cdf.analysis.filtered<-data.series.cdf.analysis[which(data.series.cdf.analysis>size.filter.value)]
+    print(paste("CDF Size filter value: ",size.filter.value,"; Done: ",round(count/length(size.filtering.vector)*100,1),"%",sep=""))
+    
+    if(identical(data.series.cdf.analysis.filtered,data.series.cdf.analysis.filtered.old) | length(data.series.cdf.analysis.filtered)==0) {print("Skipping value");next()}
+    data.series.cdf.analysis.filtered.old<-data.series.cdf.analysis.filtered
+    
+    alpha.range<-c(min(c(hde.results[1,1],kde.results[1,1]))/1.5,max(c(hde.results[1,1],kde.results[1,1]))*1.5)
+    beta.range<-c(min(c(hde.results[2,1],kde.results[2,1]))/1.5,max(c(hde.results[2,1],kde.results[2,1]))*1.5)
+    t.range<-c(min(c(hde.results[3,1],kde.results[2,1]))/1.5,max(c(hde.results[3,1],kde.results[3,1]))*1.5)
+    # Paramenter value specified by the user, specified_by_user == "YES" in configuration.txt file
+    if (configuration[19,4]=="YES") (alpha.range<-as.numeric(configuration[19,2:3]))
+    if (configuration[20,4]=="YES") (beta.range<-as.numeric(configuration[20,2:3]))
+    if (configuration[21,4]=="YES") (t.range<-as.numeric(configuration[21,2:3]))
+    
+    t.range[2]<-t.range[2]*100
+    
+    if (inherits(try(mle.cdf.analysis<-mle2(mll.doublepareto.simplified,method="L-BFGS-B",trace=FALSE,lower=c(alpha.par=alpha.range[1], beta.par=beta.range[1],t.par=t.range[1]),upper=c(alpha.par=alpha.range[2], beta.par=beta.range[2],t.par=t.range[2]),start=list(alpha.par=sum(alpha.range)/2, beta.par=sum(beta.range)/2,t.par=sum(t.range)/2),data=list(x=na.omit(data.series.cdf.analysis.filtered)),control=list(maxit=1000000,lmm=5,factr=10^-8,pgtol=0,trace=6,parscale=c(alpha.par=1, beta.par=1,t.par=1))),silent=TRUE),what="try-error"))
+    {
+      print(paste("Warning: MLE not coverged",sep=""))
+      next()
+    }	
+    mle.cdf.analysis.coefficients<-coef(summary(mle.cdf.analysis))[,1]
+    results.synthetic.cdf.coefficient.matrix.large[count,1:3]<-mle.cdf.analysis.coefficients
+    results.synthetic.cdf.coefficient.matrix.large[count,4:6]<-coef(summary(mle.cdf.analysis))[,4]
+    results.synthetic.cdf.matrix.large[,count]<-pdoublepareto.simplified(x=data.series.synthetic.cdf, alpha.par=mle.cdf.analysis.coefficients["alpha.par"], beta.par=mle.cdf.analysis.coefficients["beta.par"], t.par=mle.cdf.analysis.coefficients["t.par"], FUN=FALSE)
+    
+    require(Matching)
+    ks_boot_samples_cdf<-100
+    data.series.cdf.analysis.filtered.random<-rdoublepareto.simplified(n=length(data.series.cdf.analysis.filtered), alpha.par=mle.cdf.analysis.coefficients["alpha.par"], beta.par=mle.cdf.analysis.coefficients["beta.par"], t.par=mle.cdf.analysis.coefficients["t.par"]) 
+    ks.cdf.analysis<-NULL
+    ks.cdf.analysis<-ks.boot(data.series.cdf.analysis.filtered,data.series.cdf.analysis.filtered.random,nboots=ks_boot_samples_cdf,alternative="two.sided")
+    results.synthetic.cdf.coefficient.matrix.large[count,7:10]<-c(ks.cdf.analysis$nboots,ks.cdf.analysis$ks$statistic,ks.cdf.analysis$ks$p.value,ks.cdf.analysis$ks.boot.pvalue)
+    }
+  results.synthetic.cdf.matrix.large<-data.frame(cbind(x=data.series.synthetic.cdf,results.synthetic.cdf.matrix.large))
+  names(results.synthetic.cdf.matrix.large)<-c("x",size.filtering.vector)
+  results.synthetic.cdf.matrix.large<-results.synthetic.cdf.matrix.large[,is.finite(colSums(results.synthetic.cdf.matrix.large))]
+  write.table(results.synthetic.cdf.matrix.large,"CDF_MLE_Sensitivity_LargeSizes_LowPass_Filtering_series.txt",sep="\t",row.names=FALSE,col.names=TRUE)
+  sel.row.finite<-is.finite(rowSums(results.synthetic.cdf.coefficient.matrix.large))
+  results.synthetic.cdf.coefficient.matrix.large<-results.synthetic.cdf.coefficient.matrix.large[sel.row.finite,]
+  results.synthetic.cdf.coefficient.matrix.large<-data.frame(filter=paste("Size<",size.filtering.vector[sel.row.finite],sep=""),results.synthetic.cdf.coefficient.matrix.large)
+  write.table(results.synthetic.cdf.coefficient.matrix.large,"CDF_MLE_Sensitivity_LargeSizes_LowPass_Filtering_coefficients.txt",sep="\t",row.names=FALSE,col.names=TRUE)
+  
+  
+  library(ggplot2)
+  library(reshape2)
+  d.large<-melt(results.synthetic.cdf.matrix.large, id.vars="x")
+  str(d.large)
+  # Everything on the same plot
+  scientific_10 <- function(x) {parse(text=gsub("e", " %*% 10^", scientific_format()(x)))}
+  
+  pdf("CDF_MLE_Sensitivity_LargeSizes_LowPass_Filtering.pdf")
+  min.value.x<-range(results.synthetic.cdf.matrix.large$x)[1]
+  max.value.x<-range(results.synthetic.cdf.matrix.large$x)[2]
+  min.value.at.x<-signif(log10(min.value.x),digits=1)
+  max.value.at.x<-signif(ceiling(log10(max.value.x)),digits=1)
+  at.x<-10^(min.value.at.x:max.value.at.x)
+  at.label.x<-rep(10,length(at.x))^log10(at.x)
+  at.x.tick<-sort(as.numeric((1:9)%*%t(at.label.x)))
+  at.y.cdf<-seq(0,1,0.1)
+  at.y.tick.cdf<-seq(0,1,0.01)
+  ggplot(d.large, aes(x,value,col=variable)) + scale_x_log10(limits=c(min.value.x,max.value.x),breaks=at.label.x,labels=sciNotation(at.x,1)) + scale_y_continuous(breaks=at.y.cdf,labels=at.y.cdf) + geom_line() + labs(title="CDF sensitivity: low-pass filtering",x =xlabel, y = "Cumulative Distribution Function") + scale_colour_discrete(name = "Threshold size") + guides(col=guide_legend(ncol=2))
+  dev.off()
+  }
