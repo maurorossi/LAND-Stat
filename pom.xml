@@ -19,8 +19,8 @@
     <yumRepo>geohazards-tep</yumRepo>
   </properties>
   <scm>
-    <connection>scm:git:ssh://git@github.com/geohazards-tep/dcs-LAND-Stat</connection>
-    <developerConnection>scm:git:ssh://git@github.com/geohazards-tep/dcs-LAND-Stat</developerConnection>
+    <connection>scm:git:ssh://git@github.com/geohazards-tep/dcs-LAND-Stat.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/geohazards-tep/dcs-LAND-Stat.git</developerConnection>
     <url>https://github.com/geohazards-tep/dcs-LAND-Stat</url>
     <tag>HEAD</tag>
   </scm>
