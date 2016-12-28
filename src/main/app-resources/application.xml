@@ -1,7 +1,7 @@
 <application id="landstat">
   <jobTemplates>
     <jobTemplate id="job_template_landstat">
-      <streamingExecutable>/application/nodes/run.R</streamingExecutable>
+      <streamingExecutable>/application/job_template_landstat/run.R</streamingExecutable>
       <defaultParameters>
         <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test</parameter>
       </defaultParameters>
