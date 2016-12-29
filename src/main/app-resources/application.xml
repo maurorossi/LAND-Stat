@@ -1,26 +1,27 @@
+<?xml version="1.0" encoding="us-ascii"?>
 <application id="landstat">
   <jobTemplates>
-    <jobTemplate id="job_template_landstat">
+    <jobTemplate id="landstat">
       <streamingExecutable>/application/job_template_landstat/run.R</streamingExecutable>
-      <defaultParameters>
-        <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test</parameter>
-      </defaultParameters>
+        <defaultParameters>
+          <!-- <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test_file_name</parameter> -->
+          <parameter id="file_name">test_file_name</parameter>
+        </defaultParameters>
     </jobTemplate>
   </jobTemplates>
-  <workflow id="test_workflow" title="Test landstat" abstract="This test ....">
+  <workflow id="test_workflow" title="Test landstat" abstract="This is the abstract">
     <workflowVersion>1.0</workflowVersion>
-    <node id="node1">
-      <job id="job_template_landstat"/>
+    <node id="node_landstat">
+      <job id="landstat"/>
         <sources>
-        <!-- <source refid="file:urls">/tmp/inputs</source> -->
-        <!-- <source refid="string:list">input1,input2<source> -->
-        <source refid="string:list">input1,input2<source>
-        <!-- <source refid="cas:series">http://localhost/catalogue/sandbox/MER_RR__1P/description</source>
-        -->
+          <!-- <source refid="file:urls">/tmp/inputs</source> -->
+          <!-- <source refid="string:list">input1,input2</source> -->
+          <source refid="string:list">input1,input2</source>
+          <!-- <source refid="cas:series">http://localhost/catalogue/sandbox/MER_RR__1P/description</source> -->
         </sources>
         <parameters>
-         <parameter id="param1">valoreparametro1</parameter>
-         <parameter id="param2">valoreparametro2</parameter>
+          <parameter id="param1">1</parameter>
+          <parameter id="param2">0</parameter>
         </parameters>
     </node>
   </workflow>
