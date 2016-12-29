@@ -34,9 +34,11 @@ rciop.log("DEBUG", paste("I'm running a job with parameter values:", myparam1, m
 #   rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
  
 # }
-data_random<-rnorm(10,mean=myparam2,sd=myparam1)
-data_random2<-rnorm(10,mean=myparam2,sd=myparam1)
+data_random<-rnorm(100,mean=myparam2,sd=myparam1)
+data_random2<-rnorm(100,mean=myparam2,sd=myparam1)
+a<-hist(data_random)
 
 dt<-data.frame(x=data_random,y=data_random2)
+rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
 
-##a<-hist(rnorm(1000))
+
