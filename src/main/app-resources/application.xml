@@ -5,7 +5,7 @@
       <streamingExecutable>/application/job_template_landstat/run.R</streamingExecutable>
         <defaultParameters>
           <!-- <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test_file_name</parameter> -->
-          <parameter id="file_name">test_file_name</parameter>
+          <parameter id="file_name" scope="runtime">test_file_name</parameter>
         </defaultParameters>
     </jobTemplate>
   </jobTemplates>
@@ -16,12 +16,12 @@
         <sources>
           <!-- <source refid="file:urls">/tmp/inputs</source> -->
           <!-- <source refid="string:list">input1,input2</source> -->
-          <source refid="string:list" scope="runtime">input1,input2</source>
+          <source refid="string:list" scope="runtime">input1</source>
           <!-- <source refid="cas:series">http://localhost/catalogue/sandbox/MER_RR__1P/description</source> -->
         </sources>
         <parameters>
-          <parameter id="param1">1</parameter>
-          <parameter id="param2">0</parameter>
+          <parameter id="param1" scope="runtime">1</parameter>
+          <parameter id="param2" scope="runtime">0</parameter>
         </parameters>
     </node>
   </workflow>
