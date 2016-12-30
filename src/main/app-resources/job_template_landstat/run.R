@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript --vanilla --slave --quiet
+#!/opt/anaconda/bin/Rscript --vanilla --slave --quiet
 
 # load rciop library to access the developer cloud sandbox functions
 library("rciop")
@@ -8,7 +8,10 @@ library("rgeos")
 
 # load the parametee values with rciop.getparam() function
 myparam1 <- rciop.getparam("param1")
+myparam1 <- as.numeric(myparam1)
+
 myparam2 <- rciop.getparam("param2")
+myparam2 <- as.numeric(myparam2)
 
 # add a log message
 rciop.log("DEBUG", paste("I'm running a job with parameter values:", myparam1, myparam2, sep=" "))
