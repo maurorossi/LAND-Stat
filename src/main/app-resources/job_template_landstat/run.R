@@ -13,8 +13,29 @@ myparam1 <- as.numeric(myparam1)
 myparam2 <- rciop.getparam("param2")
 myparam2 <- as.numeric(myparam2)
 
+param_file_name <- rciop.getparam("file_name")
+####
+res <- rciop.copy(param_file_name, TMPDIR, uncompress=TRUE)
+if (res$exit.code==0) local.url <- res$output
+tmp.df <- read.table(local.url,sep="\t",dec=".",header=TRUE,stringsAsFactors=FALSE)
+#str(tmp.df)
+
+pdf("histogram.pdf")
+hist(tmp.df[,1])
+dev.off()
+
+histogram<-hist(tmp.df[,1])
+write.table(data.frame(histogram$density),"histogram.txt",sep="t")
+
+#input <- "http://landsat.usgs.gov/documents/L7_60m20090422.tgz"
+#res <- rciop.copy(input, TMPDIR, uncompress=TRUE)
+#if (res$exit.code==0) local.url <- res$output
+#local.prms <- apply(as.data.frame(prm), 1, function(url) { rciop.copy(url, TMPDIR)$output })
+#tmp.df <- read.table(textConnection(local.prms))
+####
+
 # add a log message
-rciop.log("DEBUG", paste("I'm running a job with parameter values:", myparam1, myparam2, sep=" "))
+rciop.log("DEBUG", paste("I'm running a job with parameter values:", myparam1, myparam2,param_file_name, sep=" "))
 
 # # read the inputs coming from stdin
 # f <- file("stdin")
