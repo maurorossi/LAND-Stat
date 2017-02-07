@@ -20,9 +20,9 @@
           <!-- <source refid="cas:series">http://localhost/catalogue/sandbox/MER_RR__1P/description</source> -->
         </sources>
         <parameters>
-          <parameter id="param1" title="Title param1" abstract="Abstract param1" scope="runtime">1</parameter>
-          <parameter id="param2" title="Title param2" abstract="Abstract param2" scope="runtime">0</parameter>
-          <parameter id="param3" title="Title param3" abstract="Abstract param3" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
+          <parameter id="param1" scope="runtime">1</parameter>
+          <parameter id="param2" scope="runtime">0</parameter>
+          <parameter id="param3" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
         </parameters>
     </node>
   </workflow>
