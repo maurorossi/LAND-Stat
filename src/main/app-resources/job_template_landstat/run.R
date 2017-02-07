@@ -63,6 +63,8 @@ data_random2<-rnorm(100,mean=myparam2,sd=myparam1)
 a<-hist(data_random)
 
 dt<-data.frame(x=data_random,y=data_random2)
-rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
+#rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
+rciop.publish(getwd(), recursive=TRUE, metalink=FALSE)
+
 
 
