@@ -5,7 +5,7 @@
       <streamingExecutable>/application/job_template_landstat/run.R</streamingExecutable>
         <defaultParameters>
           <!-- <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test_file_name</parameter> -->
-          <parameter id="file_name" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
+          <parameter id="file_name" title="Title file_name" abstract="Abstract file_name" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
         </defaultParameters>
     </jobTemplate>
   </jobTemplates>
