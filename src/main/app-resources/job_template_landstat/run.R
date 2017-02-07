@@ -20,12 +20,13 @@ if (res$exit.code==0) local.url <- res$output
 tmp.df <- read.table(local.url,sep="\t",dec=".",header=TRUE,stringsAsFactors=FALSE)
 #str(tmp.df)
 
-pdf("histogram.pdf")
+output_dir<-dir.create(paste(TMPDIR,"output",sep="/"))
+pdf(paste(output_dir,"histogram.pdf",sep="/"))
 hist(tmp.df[,1])
 dev.off()
 
 histogram<-hist(tmp.df[,1])
-write.table(data.frame(histogram$density),"histogram.txt",sep="t")
+write.table(data.frame(histogram$density),paste(output_dir,"histogram.txt",sep="/"),sep="\t")
 
 #input <- "http://landsat.usgs.gov/documents/L7_60m20090422.tgz"
 #res <- rciop.copy(input, TMPDIR, uncompress=TRUE)
@@ -63,8 +64,7 @@ data_random2<-rnorm(100,mean=myparam2,sd=myparam1)
 a<-hist(data_random)
 
 dt<-data.frame(x=data_random,y=data_random2)
-#rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
-rciop.publish(getwd(), recursive=TRUE, metalink=FALSE)
+rciop.publish(output_dir, recursive=TRUE, metalink=FALSE)
 
 
 
