@@ -20,7 +20,9 @@ if (res$exit.code==0) local.url <- res$output
 tmp.df <- read.table(local.url,sep="\t",dec=".",header=TRUE,stringsAsFactors=FALSE)
 #str(tmp.df)
 
-output_dir<-dir.create(paste(TMPDIR,"output",sep="/"))
+output_dir<-paste(TMPDIR,"output",sep="/")
+dir.create(output_dir)
+
 pdf(paste(output_dir,"histogram.pdf",sep="/"))
 hist(tmp.df[,1])
 dev.off()
