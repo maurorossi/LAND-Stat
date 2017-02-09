@@ -30,6 +30,15 @@ dev.off()
 histogram<-hist(tmp.df[,1])
 write.table(data.frame(histogram$density),paste(output_dir,"histogram.txt",sep="/"),sep="\t")
 
+  
+### 
+param_file_name_multiple <- rciop.getparam("file_name_multiple")
+res_multiple <- rciop.copy(param_file_name_multiple, TMPDIR, uncompress=TRUE)
+if (res_multiple$exit.code==0) local.url <- res_multiple$output
+tmp.df <- read.table(local.url,sep="\t",dec=".",header=TRUE,stringsAsFactors=FALSE)
+#str(tmp.df)
+
+  
 #input <- "http://landsat.usgs.gov/documents/L7_60m20090422.tgz"
 #res <- rciop.copy(input, TMPDIR, uncompress=TRUE)
 #if (res$exit.code==0) local.url <- res$output
