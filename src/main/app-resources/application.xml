@@ -7,7 +7,8 @@
         <defaultParameters>
           <!-- <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test_file_name</parameter> -->
           <parameter id="file_name" title="Title file_name" abstract="Abstract file_name" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
-        </defaultParameters>
+          <parameter id="file_name_multiple" title="Title file_name_multiple" abstract="Abstract file_name_multiple" scope="runtime">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</parameter>
+      </defaultParameters>
     </jobTemplate>
   </jobTemplates>
   <workflow id="test_workflow" title="Test landstat" abstract="This is the abstract">
