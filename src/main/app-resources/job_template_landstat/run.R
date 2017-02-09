@@ -2751,3 +2751,9 @@ if(executing_CDF_sensitivity_analysis==TRUE)
   ggplot(d.large, aes(x,value,col=variable)) + scale_x_log10(limits=c(min.value.x,max.value.x),breaks=at.label.x,labels=sciNotation(at.x,1)) + scale_y_continuous(breaks=at.y.cdf,labels=at.y.cdf) + geom_line() + labs(title="CDF sensitivity: low-pass filtering",x =xlabel, y = "Cumulative Distribution Function") + scale_colour_discrete(name = "Threshold size") + guides(col=guide_legend(ncol=2))
   dev.off()
   }
+
+	    
+res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
+if (res.final$exit.code==0) {published<-res.final$output }
+print(published)
+	    
