@@ -76,7 +76,7 @@ param_configuration_file_name <- rciop.getparam("configuration_file_name")
 res_configuration<-rciop.copy(param_configuration_file_name, TMPDIR, uncompress=TRUE)
 if (res_configuration$exit.code==0) local.url.configuration <- res_configuration$output
 configuration<-read.table(local.url.configuration,header=FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
-file.remove(local.url)
+file.remove(local.url.configuration)
 # configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
 ######################
 	
