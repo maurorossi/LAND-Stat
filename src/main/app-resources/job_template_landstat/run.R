@@ -66,10 +66,10 @@
 # #setwd("/media/disco_dati/R/MLE_LandslideArea/TEST_KCL_20140211")
 # #memory.limit(size=16000)
 
-workdir<-paste(TMPDIR,"output_landstat",sep="/")
-unlink(workdir,recursive=TRUE,force=TRUE)
-dir.create(workdir)
-setwd(workdir)
+#workdir<-paste(TMPDIR,"output_landstat",sep="/")
+#unlink(workdir,recursive=TRUE,force=TRUE)
+#dir.create(workdir)
+#setwd(workdir)
 
 library("rciop")
 param_configuration_file_name <- rciop.getparam("configuration_file_name")
