@@ -57,39 +57,53 @@
 #########################################################################
 #########################################################################
 
-
+###################### WPS ESA modification
 # rm(list=(ls()))
 # graphics.off()
 # workdir<-"X:/R/MLE_LandslideArea/Run_Volume_Sandra_20161109/Salzberg" # For windows
-# #workdir<-"/media/disco_dati/R/MLE_LandslideArea/Run_Romania_20150525  # For linux
+# #workdir<-"/media/disco_dati/R/MLE_LandslideArea/Run_Romania_20150525"  # For linux
 # setwd(workdir)
 # #setwd("/media/disco_dati/R/MLE_LandslideArea/TEST_KCL_20140211")
+# #memory.limit(size=16000)
 
-#memory.limit(size=16000)
+workdir<-paste(TMPDIR,"output_landstat",sep="/")
+unlink(workdir,recursive=TRUE,force=TRUE)
+dir.create(workdir)
+setwd(workdir)
+
 library("rciop")
 param_configuration_file_name <- rciop.getparam("configuration_file_name")
-####
 res_configuration<-rciop.copy(param_configuration_file_name, TMPDIR, uncompress=TRUE)
-if (res_configuration$exit.code==0) local.url <- res_configuration$output
-tmp.df <- read.table(local.url,sep="\t",dec=".",header=TRUE,stringsAsFactors=FALSE)
-#str(tmp.df)
-
-configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
+if (res_configuration$exit.code==0) local.url.configuration <- res_configuration$output
+configuration<-read.table(local.url.configuration,header=FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
+file.remove(local.url)
+# configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
+######################
+	
 summary(configuration)
 str(configuration)
 names(configuration)
 
 
 ### Selcting the type of data to be analyzed
-#xlabel<-expression(A~~(m^{2})) # For area
-xlabel<-expression(V~~(m^{3})) # For volume
+xlabel<-expression(A~~(m^{2})) # For area
+#xlabel<-expression(V~~(m^{3})) # For volume
 #xlabel<-expression(X~~(m)) # For a length  
 #xlabel<-expression(frac(L, W)~~bgroup("(",frac(m,m),")")) # For a length/width ratio
 
 
-ks_boot_samples<-1000
+ks_boot_samples<-100
 use_shape<-FALSE
-name_file_data<-"Data1_nocolname.txt" # .txt or .shp if use_shape=TRUE
+	
+
+###################### WPS ESA modification
+param_data_file_name <- rciop.getparam("data_file_name")
+res_data<-rciop.copy(param_data_file_name, TMPDIR, uncompress=TRUE)
+if (res_data$exit.code==0) local.url.data <- res_data$output
+name_file_data<-local.url.data
+# name_file_data<-"Data1_nocolname.txt" # .txt or .shp if use_shape=TRUE
+######################
+	
 use_shape_field_stat<-TRUE
 shape_field_stat<-"area_sqrm"
 
