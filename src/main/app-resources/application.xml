@@ -6,8 +6,8 @@
       <streamingExecutable>/application/job_template_landstat/run.R</streamingExecutable>
         <defaultParameters>
           <!-- <parameter id="file_name" title="Input file" abstract="Name of input file name" scope="runtime">test_file_name</parameter> -->
-          <parameter id="file_name" title="Title file_name" abstract="Abstract file_name" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
-          <parameter id="file_name_multiple" title="Title file_name_multiple" abstract="Abstract file_name_multiple" scope="runtime">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</parameter>
+          <parameter id="data_file_name" title="Link to the compressed data file" abstract="Specificy URL of of the compressed data file (.gz, .tgz)" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
+          <parameter id="configuration_file_name" title="Link to the compressed configuration file" abstract="Specificy URL of of the compressed configuration file (.gz, .tgz)" scope="runtime">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
       </defaultParameters>
     </jobTemplate>
   </jobTemplates>
@@ -24,8 +24,8 @@
         <parameters>
           <parameter id="param1">1</parameter>
           <parameter id="param2">0</parameter>
-          <parameter id="param3">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
-          <parameter id="param4">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</parameter>
+          <!--<parameter id="param3">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter> -->
+          <!--<parameter id="param4">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</parameter> -->
         </parameters>
     </node>
   </workflow>
