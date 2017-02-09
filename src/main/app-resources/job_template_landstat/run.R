@@ -5,7 +5,6 @@ library("rciop")
 
 
 
-
 #########################################################################
 #########################################################################
 ####                                                                 ####
@@ -155,26 +154,28 @@ setwd(paste(getwd(),"/Results",sep=""))
 #### Box Plot
 centers<-1:dim(data.series)[2]
 color.series<-heat.colors(dim(data.series)[2], alpha = 1)
-if (Sys.info()[1] == "Linux") {x11()}
-if (Sys.info()[1] == "Windows") {windows()}
-if (Sys.info()[1] == "Darwin") {quartz()}
-par(cex.axis=0.5)
-for (center.count in 1:dim(data.series)[2])
-   {
-   if (center.count == 1)
-    {
-    boxplot(data.series[,center.count],main=paste("Box Plot comparison",sep=""),plot=TRUE,at=centers[center.count],log="y",xlim=c(0,dim(data.series)[2]+1),ylim=range(data.series,na.rm=TRUE),width=10,border="black",col=color.series[center.count])
-    } else
-    {
-    boxplot(data.series[,center.count],add=TRUE, plot=TRUE,at=centers[center.count],border="black",col=color.series[center.count],width=10)
-    }
-    lines(c(centers[center.count]-0.4,centers[center.count]+0.4),rep(mean(na.omit(data.series[,center.count])),2),lty=2,lwd=1)
-    points(centers[center.count],mean(na.omit(data.series[,center.count])),pch=4,lwd=1)
-    points(centers[center.count],min(na.omit(data.series[,center.count])),pch=24,lwd=1,col="black",bg="darkgreen")
-    points(centers[center.count],max(na.omit(data.series[,center.count])),pch=25,lwd=1,col="black",bg="darkgreen")	
-    axis(side=1, at=center.count, labels = paste(names(data.series)[center.count],sep=""))
-   }
 
+###################### WPS ESA modification
+# if (Sys.info()[1] == "Linux") {x11()}
+# if (Sys.info()[1] == "Windows") {windows()}
+# if (Sys.info()[1] == "Darwin") {quartz()}
+# par(cex.axis=0.5)
+# for (center.count in 1:dim(data.series)[2])
+#    {
+#    if (center.count == 1)
+#     {
+#     boxplot(data.series[,center.count],main=paste("Box Plot comparison",sep=""),plot=TRUE,at=centers[center.count],log="y",xlim=c(0,dim(data.series)[2]+1),ylim=range(data.series,na.rm=TRUE),width=10,border="black",col=color.series[center.count])
+#     } else
+#     {
+#     boxplot(data.series[,center.count],add=TRUE, plot=TRUE,at=centers[center.count],border="black",col=color.series[center.count],width=10)
+#     }
+#     lines(c(centers[center.count]-0.4,centers[center.count]+0.4),rep(mean(na.omit(data.series[,center.count])),2),lty=2,lwd=1)
+#     points(centers[center.count],mean(na.omit(data.series[,center.count])),pch=4,lwd=1)
+#     points(centers[center.count],min(na.omit(data.series[,center.count])),pch=24,lwd=1,col="black",bg="darkgreen")
+#     points(centers[center.count],max(na.omit(data.series[,center.count])),pch=25,lwd=1,col="black",bg="darkgreen")	
+#     axis(side=1, at=center.count, labels = paste(names(data.series)[center.count],sep=""))
+#    }
+######################
 
 pdf(file = paste("BoxPlot_Comparison.pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
 par(cex.axis=0.4)
@@ -1054,17 +1055,20 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 
 
    # Plot comparison HDE different distribution
-	if (Sys.info()[1] == "Linux") {x11()}
-	if (Sys.info()[1] == "Windows") {windows()}
-	if (Sys.info()[1] == "Darwin") {quartz()}
-   plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
-   lines(data.series.synthetic,10^value.fit.hde.log.doublepareto.simplified,col="dark green",lty=1)
-   lines(data.series.synthetic,10^value.fit.hde.log.doublepareto,col="red",lty=1)
-   lines(data.series.synthetic,10^value.fit.hde.log.inversegamma,col="violet",lty=1)
-   #lines(data.series.synthetic,value.fit.hde.inversegamma,col="violet",lty=1)
-   mtext(paste("HDE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
-   legend("bottomleft",legend=c("Histogram raw data","Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(1,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,1),lwd=1,col=c("blue","dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
 
+   ###################### WPS ESA modification
+   # if (Sys.info()[1] == "Linux") {x11()}
+   # if (Sys.info()[1] == "Windows") {windows()}
+   # if (Sys.info()[1] == "Darwin") {quartz()}
+   # plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
+   # lines(data.series.synthetic,10^value.fit.hde.log.doublepareto.simplified,col="dark green",lty=1)
+   # lines(data.series.synthetic,10^value.fit.hde.log.doublepareto,col="red",lty=1)
+   # lines(data.series.synthetic,10^value.fit.hde.log.inversegamma,col="violet",lty=1)
+   # #lines(data.series.synthetic,value.fit.hde.inversegamma,col="violet",lty=1)
+   # mtext(paste("HDE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   # legend("bottomleft",legend=c("Histogram raw data","Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(1,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,1),lwd=1,col=c("blue","dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
+   ######################
+	   
    pdf(file = paste("HDE_Fit_Comparison_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
    par(cex.axis=0.9)
    plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""),xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
@@ -1646,18 +1650,21 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 
 
    # Plot comparison KDE different distribution
-	if (Sys.info()[1] == "Linux") {x11()}
-	if (Sys.info()[1] == "Windows") {windows()}
-	if (Sys.info()[1] == "Darwin") {quartz()}
-   plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
-   lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
-   lines(data.series.synthetic,10^value.fit.kde.log.doublepareto.simplified,col="dark green",lty=2)
-   lines(data.series.synthetic,10^value.fit.kde.log.doublepareto,col="red",lty=2)
-   lines(data.series.synthetic,10^value.fit.kde.log.inversegamma,col="violet",lty=2)
-   #lines(linear.x.data.series,value.fit.kde.inversegamma,col="violet",lty=2)
-   mtext(paste("KDE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
-   legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,2,2,2),lwd=1,col=c("blue","orange","dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
-
+	   
+   ###################### WPS ESA modification
+   # if (Sys.info()[1] == "Linux") {x11()}
+   # if (Sys.info()[1] == "Windows") {windows()}
+   # if (Sys.info()[1] == "Darwin") {quartz()}
+   # plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
+   # lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
+   # lines(data.series.synthetic,10^value.fit.kde.log.doublepareto.simplified,col="dark green",lty=2)
+   # lines(data.series.synthetic,10^value.fit.kde.log.doublepareto,col="red",lty=2)
+   # lines(data.series.synthetic,10^value.fit.kde.log.inversegamma,col="violet",lty=2)
+   # #lines(linear.x.data.series,value.fit.kde.inversegamma,col="violet",lty=2)
+   # mtext(paste("KDE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   # legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,2,2,2),lwd=1,col=c("blue","orange","dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
+   ######################
+	   
    pdf(file = paste("KDE_Fit_Comparison_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
    par(cex.axis=0.9)
    plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
@@ -2208,16 +2215,19 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
    
 
    # Plot comparison MLE different distribution
-	if (Sys.info()[1] == "Linux") {x11()}
-	if (Sys.info()[1] == "Windows") {windows()}
-	if (Sys.info()[1] == "Darwin") {quartz()}
-   plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
-   lines(data.series.synthetic,pdf.mle.data.series.dps,col="dark green",lty=3)
-   lines(data.series.synthetic,pdf.mle.data.series.dp,col="red",lty=3)
-   lines(data.series.synthetic,pdf.mle.data.series.ig,col="violet",lty=3)
-   mtext(paste("MLE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
-   legend("bottomleft",legend=c("Histogram raw data","Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(1,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,3,3,3),lwd=1,col=c("blue","dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
-
+	   
+   ###################### WPS ESA modification
+   # if (Sys.info()[1] == "Linux") {x11()}
+   # if (Sys.info()[1] == "Windows") {windows()}
+   # if (Sys.info()[1] == "Darwin") {quartz()}
+   # plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
+   # lines(data.series.synthetic,pdf.mle.data.series.dps,col="dark green",lty=3)
+   # lines(data.series.synthetic,pdf.mle.data.series.dp,col="red",lty=3)
+   # lines(data.series.synthetic,pdf.mle.data.series.ig,col="violet",lty=3)
+   # mtext(paste("MLE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   # legend("bottomleft",legend=c("Histogram raw data","Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(1,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,3,3,3),lwd=1,col=c("blue","dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
+   ######################
+	   
    pdf(file = paste("MLE_Fit_Comparison_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
    par(cex.axis=0.9)
    plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
@@ -2228,17 +2238,17 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
    legend("bottomleft",legend=c("Histogram raw data","Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(1,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,3,3,3),lwd=1,col=c("blue","dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
    dev.off()
 
-
+   ###################### WPS ESA modification
    # CDF plot comparison MLE different distribution
-	if (Sys.info()[1] == "Linux") {x11()}
-	if (Sys.info()[1] == "Windows") {windows()}
-	if (Sys.info()[1] == "Darwin") {quartz()}
-   plot(data.series.synthetic,cdf.mle.data.series.dps, log="x", main="Cumulative distribution function", ylab=paste("Cumulative probability density",sep=""), xlab=xlabel,type="l",col="dark green",xlim=range.plot.area,ylim=c(0,1))
-   lines(data.series.synthetic,cdf.mle.data.series.dp,col="red")
-   lines(data.series.synthetic,cdf.mle.data.series.ig,col="violet")
-   mtext(paste("CDF MLE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
-   legend("topleft",legend=c("Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(NA_integer_,NA_integer_,NA_integer_),lty=c(1,1,1),lwd=1,col=c("dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
-
+   # if (Sys.info()[1] == "Linux") {x11()}
+   # if (Sys.info()[1] == "Windows") {windows()}
+   # if (Sys.info()[1] == "Darwin") {quartz()}
+   # plot(data.series.synthetic,cdf.mle.data.series.dps, log="x", main="Cumulative distribution function", ylab=paste("Cumulative probability density",sep=""), xlab=xlabel,type="l",col="dark green",xlim=range.plot.area,ylim=c(0,1))
+   # lines(data.series.synthetic,cdf.mle.data.series.dp,col="red")
+   # lines(data.series.synthetic,cdf.mle.data.series.ig,col="violet")
+   # mtext(paste("CDF MLE Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   # legend("topleft",legend=c("Double Pareto simplified","Double Pareto","Inverse Gamma"),pch=c(NA_integer_,NA_integer_,NA_integer_),lty=c(1,1,1),lwd=1,col=c("dark green","red","violet"),cex=0.8,box.lty=3,box.col="black")
+   ######################
 
    pdf(file = paste("CDF_MLE_Fit_Comparison_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
    plot(data.series.synthetic,cdf.mle.data.series.dps, log="x", main="Cumulative distribution function", ylab=paste("Cumulative probability density",sep=""), xlab=xlabel,type="l",col="dark green",xlim=range.plot.area,ylim=c(0,1))
@@ -2466,17 +2476,20 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 # ------------------------ HDE, KDE, MLE Comparison  ------------------------ #
 
    # Plot comparison DPS
-	if (Sys.info()[1] == "Linux") {x11()}
-	if (Sys.info()[1] == "Windows") {windows()}
-	if (Sys.info()[1] == "Darwin") {quartz()}
-   plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
-   lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
-   lines(data.series.synthetic,10^value.fit.hde.log.doublepareto.simplified,col="dark green",lty=1)
-   lines(data.series.synthetic,10^value.fit.kde.log.doublepareto.simplified,col="dark green",lty=2)
-   lines(data.series.synthetic,pdf.mle.data.series.dps,col="dark green",lty=3)
-   mtext(paste("Double Pareto Simplified Comparison -> ",names(data.series)[series],sep=""), side=3, col="dark green", cex=0.8, line=0.5)
-   legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","HDE","KDE","MLE"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,2,3),lwd=1,col=c("blue","orange","dark green","dark green","dark green"),cex=0.8,box.lty=3,box.col="black")
-
+		
+   ###################### WPS ESA modification
+   # if (Sys.info()[1] == "Linux") {x11()}
+   # if (Sys.info()[1] == "Windows") {windows()}
+   # if (Sys.info()[1] == "Darwin") {quartz()}
+   # plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
+   # lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
+   # lines(data.series.synthetic,10^value.fit.hde.log.doublepareto.simplified,col="dark green",lty=1)
+   # lines(data.series.synthetic,10^value.fit.kde.log.doublepareto.simplified,col="dark green",lty=2)
+   # lines(data.series.synthetic,pdf.mle.data.series.dps,col="dark green",lty=3)
+   # mtext(paste("Double Pareto Simplified Comparison -> ",names(data.series)[series],sep=""), side=3, col="dark green", cex=0.8, line=0.5)
+   # legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","HDE","KDE","MLE"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,2,3),lwd=1,col=c("blue","orange","dark green","dark green","dark green"),cex=0.8,box.lty=3,box.col="black")
+   ######################
+			
    pdf(file = paste("Model_Comparison_DPS_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
    par(cex.axis=0.9)
    plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
@@ -2488,19 +2501,20 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
    legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","HDE","KDE","MLE"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,2,3),lwd=1,col=c("blue","orange","dark green","dark green","dark green"),cex=0.8,box.lty=3,box.col="black")
    dev.off()
 
-
    # Plot comparison DP
-	if (Sys.info()[1] == "Linux") {x11()}
-	if (Sys.info()[1] == "Windows") {windows()}
-	if (Sys.info()[1] == "Darwin") {quartz()}
-   plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
-   lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
-   lines(data.series.synthetic,10^value.fit.hde.log.doublepareto,col="red",lty=1)
-   lines(data.series.synthetic,10^value.fit.kde.log.doublepareto,col="red",lty=2)
-   lines(data.series.synthetic,pdf.mle.data.series.dp,col="red",lty=3)
-   mtext(paste("Double Pareto Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
-   legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","HDE","KDE","MLE"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,2,3),lwd=1,col=c("blue","orange","red","red","red"),cex=0.8,box.lty=3,box.col="black")
-
+   ###################### WPS ESA modification
+   # if (Sys.info()[1] == "Linux") {x11()}
+   # if (Sys.info()[1] == "Windows") {windows()}
+   # if (Sys.info()[1] == "Darwin") {quartz()}
+   # plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
+   # lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
+   # lines(data.series.synthetic,10^value.fit.hde.log.doublepareto,col="red",lty=1)
+   # lines(data.series.synthetic,10^value.fit.kde.log.doublepareto,col="red",lty=2)
+   # lines(data.series.synthetic,pdf.mle.data.series.dp,col="red",lty=3)
+   # mtext(paste("Double Pareto Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   # legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","HDE","KDE","MLE"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,2,3),lwd=1,col=c("blue","orange","red","red","red"),cex=0.8,box.lty=3,box.col="black")
+   ######################
+			
    pdf(file = paste("Model_Comparison_DP_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
    par(cex.axis=0.9)
    plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)  # Histogram raw
@@ -2514,19 +2528,21 @@ mtext(paste("Boostrapped KS test -> D: ",round(ks_greater_result[1,3],3),"; p-va
 
 
    # Plot comparison IG
-	if (Sys.info()[1] == "Linux") {x11()}
-	if (Sys.info()[1] == "Windows") {windows()}
-	if (Sys.info()[1] == "Darwin") {quartz()}
-   plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
-   lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
-   lines(data.series.synthetic,10^value.fit.hde.log.inversegamma,col="violet",lty=1)
-   #lines(data.series.synthetic,value.fit.hde.inversegamma,col="violet",lty=1)
-   lines(data.series.synthetic,10^value.fit.kde.log.inversegamma,col="violet",lty=2)
-   #lines(linear.x.data.series,value.fit.kde.inversegamma,col="violet",lty=2)
-   lines(data.series.synthetic,pdf.mle.data.series.ig,col="violet",lty=3)
-   mtext(paste("Inverse Gamma Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
-   legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","HDE","KDE","MLE"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,2,3),lwd=1,col=c("blue","orange","violet","violet","violet"),cex=0.8,box.lty=3,box.col="black")
-
+   ###################### WPS ESA modification
+   # if (Sys.info()[1] == "Linux") {x11()}
+   # if (Sys.info()[1] == "Windows") {windows()}
+   # if (Sys.info()[1] == "Darwin") {quartz()}
+   # plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
+   # lines(linear.x.data.series, kde.data.series.linear, col="orange",lty=1,lwd=1)
+   # lines(data.series.synthetic,10^value.fit.hde.log.inversegamma,col="violet",lty=1)
+   # #lines(data.series.synthetic,value.fit.hde.inversegamma,col="violet",lty=1)
+   # lines(data.series.synthetic,10^value.fit.kde.log.inversegamma,col="violet",lty=2)
+   # #lines(linear.x.data.series,value.fit.kde.inversegamma,col="violet",lty=2)
+   # lines(data.series.synthetic,pdf.mle.data.series.ig,col="violet",lty=3)
+   # mtext(paste("Inverse Gamma Comparison -> ",names(data.series)[series],sep=""), side=3, col="red", cex=0.8, line=0.5)
+   # legend("bottomleft",legend=c("Histogram raw data","Kernel density raw data","HDE","KDE","MLE"),pch=c(1,NA_integer_,NA_integer_,NA_integer_,NA_integer_),lty=c(FALSE,1,1,2,3),lwd=1,col=c("blue","orange","violet","violet","violet"),cex=0.8,box.lty=3,box.col="black")
+   ######################
+			
    pdf(file = paste("Model_Comparison_IG_",names(data.series)[series],".pdf",sep=""), width = 6, height = 6, onefile = TRUE, family = "Helvetica", fonts = NULL, paper = "special", pagecentre=TRUE)
    par(cex.axis=0.9)
    plot(linear.mids.data.series, prob.linear.data.series, log="xy", main="Probability densities", ylab=paste("Probability density",sep=""), xlab=xlabel,col="blue",xlim=range.plot.area,ylim=range.plot.density)
