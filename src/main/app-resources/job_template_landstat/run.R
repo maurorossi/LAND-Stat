@@ -1,4 +1,9 @@
 #!/opt/anaconda/bin/Rscript --vanilla --slave --quiet
+library("rciop")
+
+
+
+
 
 
 #########################################################################
@@ -74,7 +79,6 @@
 #dir.create(workdir)
 #setwd(workdir)
 
-library("rciop")
 param_configuration_file_name <- rciop.getparam("configuration_file_name")
 res_configuration<-rciop.copy(param_configuration_file_name, TMPDIR, uncompress=TRUE)
 if (res_configuration$exit.code==0) local.url.configuration <- res_configuration$output
