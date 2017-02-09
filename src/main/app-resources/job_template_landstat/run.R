@@ -58,14 +58,21 @@
 #########################################################################
 
 
-rm(list=(ls()))
-graphics.off()
-workdir<-"X:/R/MLE_LandslideArea/Run_Volume_Sandra_20161109/Salzberg" # For windows
-#workdir<-"/media/disco_dati/R/MLE_LandslideArea/Run_Romania_20150525  # For linux
-setwd(workdir)
-#setwd("/media/disco_dati/R/MLE_LandslideArea/TEST_KCL_20140211")
+# rm(list=(ls()))
+# graphics.off()
+# workdir<-"X:/R/MLE_LandslideArea/Run_Volume_Sandra_20161109/Salzberg" # For windows
+# #workdir<-"/media/disco_dati/R/MLE_LandslideArea/Run_Romania_20150525  # For linux
+# setwd(workdir)
+# #setwd("/media/disco_dati/R/MLE_LandslideArea/TEST_KCL_20140211")
 
 #memory.limit(size=16000)
+library("rciop")
+param_configuration_file_name <- rciop.getparam("configuration_file_name")
+####
+res_configuration<-rciop.copy(param_configuration_file_name, TMPDIR, uncompress=TRUE)
+if (res_configuration$exit.code==0) local.url <- res_configuration$output
+tmp.df <- read.table(local.url,sep="\t",dec=".",header=TRUE,stringsAsFactors=FALSE)
+#str(tmp.df)
 
 configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
 summary(configuration)
