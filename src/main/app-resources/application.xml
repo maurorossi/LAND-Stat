@@ -24,6 +24,7 @@
           <parameter id="param1">1</parameter>
           <parameter id="param2">0</parameter>
           <parameter id="param3">https://194.119.218.103/s/azZ0iVToQos6UEv/download</parameter>
+          <parameter id="param4">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</parameter>
         </parameters>
     </node>
   </workflow>
