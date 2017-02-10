@@ -78,11 +78,21 @@ library("rciop")
 #dir.create(workdir)
 #setwd(workdir)
 
-param_configuration_file_name <- rciop.getparam("configuration_file_name")
-res_configuration<-rciop.copy(param_configuration_file_name, TMPDIR, uncompress=TRUE)
-if (res_configuration$exit.code==0) local.url.configuration <- res_configuration$output
-configuration<-read.table(local.url.configuration,header=FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
-file.remove(local.url.configuration)
+data_file_name <- rciop.getparam("file_name")
+res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=TRUE)
+if (res_data$exit.code==0) local.url.data <- res_data$output
+tar_file_list<-untar(local.url.data,list=TRUE)
+print(tar_file_list)
+
+# configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
+configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
+
+
+#param_configuration_file_name <- rciop.getparam("configuration_file_name")
+#res_configuration<-rciop.copy(param_configuration_file_name, TMPDIR, uncompress=TRUE)
+#if (res_configuration$exit.code==0) local.url.configuration <- res_configuration$output
+#configuration<-read.table(local.url.configuration,header=FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
+#file.remove(local.url.configuration)
 # configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
 ######################
 	
@@ -99,19 +109,35 @@ xlabel<-expression(A~~(m^{2})) # For area
 
 
 ks_boot_samples<-100
-use_shape<-FALSE
 	
 
 ###################### WPS ESA modification
-param_data_file_name <- rciop.getparam("data_file_name")
-res_data<-rciop.copy(param_data_file_name, TMPDIR, uncompress=TRUE)
-if (res_data$exit.code==0) local.url.data <- res_data$output
-name_file_data<-local.url.data
+# use_shape<-FALSE
+use_shape<-rciop.getparam("enable_shapefile")
+
+# use_shape_field_stat<-TRUE
+use_shape_field_stat<-rciop.getparam("use_shape_field")
+
+# shape_field_stat<-"area_sqrm"
+shape_field_stat<-rciop.getparam("shape_area_field")
+	
 # name_file_data<-"Data1_nocolname.txt" # .txt or .shp if use_shape=TRUE
+####### FINO QUI 
+if(use_shape==TRUE)
+	{
+	name_file_data<-tar_file_list[grep(".shp",tar_file_list)]
+	} else
+	{
+	name_file_data<-tar_file_list[grep(".txt",tar_file_list)]
+	}
+	#param_data_file_name <- rciop.getparam("data_file_name")
+#res_data<-rciop.copy(param_data_file_name, TMPDIR, uncompress=TRUE)
+#if (res_data$exit.code==0) local.url.data <- res_data$output
+#name_file_data<-local.url.data
+
 ######################
 	
-use_shape_field_stat<-TRUE
-shape_field_stat<-"area_sqrm"
+
 
 bin_method<-c("Sturges") # "Sturges" or "scott" or "FD"
 
@@ -2751,3 +2777,9 @@ if(executing_CDF_sensitivity_analysis==TRUE)
   ggplot(d.large, aes(x,value,col=variable)) + scale_x_log10(limits=c(min.value.x,max.value.x),breaks=at.label.x,labels=sciNotation(at.x,1)) + scale_y_continuous(breaks=at.y.cdf,labels=at.y.cdf) + geom_line() + labs(title="CDF sensitivity: low-pass filtering",x =xlabel, y = "Cumulative Distribution Function") + scale_colour_discrete(name = "Threshold size") + guides(col=guide_legend(ncol=2))
   dev.off()
   }
+
+	    
+res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
+if (res.final$exit.code==0) {published<-res.final$output }
+print(published)
+	    
