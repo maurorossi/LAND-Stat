@@ -87,6 +87,8 @@ local.url.data
 list.files(local.url.data)
 TMPDIR
 list.files(TMPDIR)
+getwd()
+list.files()
 
 #tar_file_list<-untar(local.url.data,list=TRUE)
 tar_file_list<-paste(TMPDIR,untar(local.url.data,list=TRUE),sep="/")
