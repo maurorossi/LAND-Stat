@@ -2782,6 +2782,7 @@ if(executing_CDF_sensitivity_analysis==TRUE)
   dev.off()
   }
 
-res.final <- rciop.publish(TMPDIR, recursive=TRUE, metalink=TRUE)
+rciop.publish(getwd(), recursive=TRUE, metalink=TRUE)
+#res.final <- rciop.publish(TMPDIR, recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=TRUE)
 
