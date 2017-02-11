@@ -79,10 +79,14 @@ library("rciop")
 #setwd(workdir)
 
 data_file_name <- rciop.getparam("file_name")
-res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=TRUE)
+res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=FALSE)
 if (res_data$exit.code==0) local.url.data <- res_data$output
-tar_file_list<-untar(local.url.data,list=TRUE)
-print(tar_file_list)
+
+data_file_name
+tar_file_list<-untar(local.url.data,list=TRUE) # list files
+untar(local.url.data,list=FALSE) # untar files
+
+list.files(getwd())
 
 # configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
 configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
@@ -128,7 +132,7 @@ if(use_shape==TRUE)
 	name_file_data<-tar_file_list[grep(".shp",tar_file_list)]
 	} else
 	{
-	name_file_data<-tar_file_list[grep(".txt",tar_file_list)]
+	name_file_data<-tar_file_list[grep("data.txt",tar_file_list)]
 	}
 	#param_data_file_name <- rciop.getparam("data_file_name")
 #res_data<-rciop.copy(param_data_file_name, TMPDIR, uncompress=TRUE)
@@ -2779,7 +2783,5 @@ if(executing_CDF_sensitivity_analysis==TRUE)
   }
 
 	    
-res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=FALSE)
-if (res.final$exit.code==0) {published<-res.final$output }
-print(published)
-	    
+res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=TRUE)
+
