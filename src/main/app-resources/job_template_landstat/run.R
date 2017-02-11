@@ -85,8 +85,10 @@ data_file_name
 local.url.data
 TMPDIR
 
-tar_file_list<-untar(local.url.data,list=TRUE)
-print(tar_file_list)
+#tar_file_list<-untar(local.url.data,list=TRUE)
+tar_file_list<-paste(local.url.data,untar(local.url.data,list=TRUE),sep="/")
+
+tar_file_list
 
 # configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
 configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
