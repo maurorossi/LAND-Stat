@@ -82,17 +82,18 @@ data_file_name <- rciop.getparam("file_name")
 res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=FALSE)
 if (res_data$exit.code==0) local.url.data <- res_data$output
 data_file_name
-list.files()
+
 local.url.data
+tar_file_list<-untar(local.url.data,list=TRUE)
 list.files(local.url.data)
+
 TMPDIR
 list.files(TMPDIR)
+
 getwd()
-list.files()
-
-#tar_file_list<-untar(local.url.data,list=TRUE)
+list.files(getwd())
+	
 tar_file_list<-paste(TMPDIR,untar(local.url.data,list=TRUE),sep="/")
-
 tar_file_list
 
 # configuration<-read.table("configuration.txt",header = FALSE,skip=1,dec=".", sep="\t",as.is=TRUE)
