@@ -14,7 +14,7 @@
       </defaultParameters>
     </jobTemplate>
   </jobTemplates>
-  <workflow id="test_workflow" title="Test landstat" abstract="This is the abstract">
+  <workflow id="dcs_landstat_workflow" title="LAND-Stat workflow" abstract="This is the workflow of LAND-Stat a tool to calculate landslide size statistics">
     <workflowVersion>1.0</workflowVersion>
     <node id="node_job_template_landstat">
       <job id="job_template_landstat"/>
