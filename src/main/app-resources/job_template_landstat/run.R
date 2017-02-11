@@ -82,6 +82,8 @@ data_file_name <- rciop.getparam("file_name")
 res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=TRUE)
 if (res_data$exit.code==0) local.url.data <- res_data$output
 print(local.url.data)
+print(TMPDIR)
+
 tar_file_list<-untar(local.url.data,list=TRUE)
 print(tar_file_list)
 
