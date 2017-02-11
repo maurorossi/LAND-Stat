@@ -79,8 +79,9 @@ library("rciop")
 #setwd(workdir)
 
 data_file_name <- rciop.getparam("file_name")
-res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=TRUE)
+res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=FALSE)
 if (res_data$exit.code==0) local.url.data <- res_data$output
+data_file_name
 local.url.data
 TMPDIR
 
