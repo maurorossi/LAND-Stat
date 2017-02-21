@@ -10,7 +10,7 @@
           <parameter id="file_name" title="Link to the compressed data file" abstract="Specify URL of the compressed data file (.gz, .tgz)" scope="runtime">https://194.119.218.103/s/NGwh7DvJB1xBcZr/download</parameter>
           <!-- <parameter id="file_name" title="Link to the compressed data file" abstract="Specify URL of the compressed data file (.gz, .tgz)" scope="runtime">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</parameter> -->
           <parameter id="enable_shapefile" title="Using shapefile" abstract="Specify is a shapefile must be used (TRUE, FALSE)" scope="runtime">TRUE</parameter>
-          <parameter id="use_shape_field" title="Using shapefile field" abstract="Specify is the area values are provided in a shapefile field (TRUE, FALSE). If TRUE, in the following, provide the name of the field to be used." scope="runtime">TRUE</parameter>
+          <parameter id="use_shape_field" title="Using shapefile field" abstract="Specify is the area values are provided in a shapefile field (TRUE, FALSE). If TRUE, in the following, provide the name of the field to be used." scope="runtime">FALSE</parameter>
           <parameter id="shape_area_field" title="Name of shapefile field with area values" abstract="Specify the name of the shapefile field containing the area values." scope="runtime">area</parameter>
       </defaultParameters>
     </jobTemplate>
