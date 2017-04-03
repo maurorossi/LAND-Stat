@@ -22,7 +22,7 @@
         <sources>
           <!-- <source refid="file:urls">/tmp/inputs</source> -->
           <!-- <source refid="string:list">input1,input2</source> -->
-          <source id="file_name_test" refid="string:list" title="Link to the compressed data file" abstract="Specify URL of the compressed data file (.gz, .tgz)" scope="test">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</source>
+          <source id="file_name_test" refid="string:list" title="Link to the compressed data file" abstract="Specify URL of the compressed data file (.gz, .tgz)">https://194.119.218.103/s/fDz6mILiMgyKhlk/download</source>
           <!-- <source refid="cas:series">http://localhost/catalogue/sandbox/MER_RR__1P/description</source> -->
         </sources>
         <parameters>
