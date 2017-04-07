@@ -78,6 +78,30 @@ library("rciop")
 #dir.create(workdir)
 #setwd(workdir)
 
+
+time_start_calculation<-Sys.time()
+time_suffix<-format(time_start_calculation,"%Y%m%d_%H%M")
+enable_file_logging<-TRUE
+log_file_name<-paste("LAND-Stat_run_",time_suffix,".log",sep="")
+
+
+#-------------------------------- File logging opening --------------------------------#
+if (enable_file_logging == TRUE)
+  {
+  sink.file<-file(paste(log_file_name,sep=""),open="a")  
+  if(file.exists(paste(log_file_name,sep=""))==FALSE)
+    {
+    file.create(paste(log_file_name,sep=""),showWarnings=TRUE)
+    }
+  sink(sink.file,type="message")
+  sink(sink.file,type="output")
+  #sink() # to unsink file
+  #print("",quote=FALSE)
+  print("---------------------------------------",quote=FALSE)
+  }
+
+
+
 data_file_name <- rciop.getparam("file_name")
 res_data<-rciop.copy(data_file_name, TMPDIR, uncompress=FALSE)
 if (res_data$exit.code==0) local.url.data <- res_data$output
@@ -2782,7 +2806,18 @@ if(executing_CDF_sensitivity_analysis==TRUE)
   dev.off()
   }
 
-rciop.publish(getwd(), recursive=TRUE, metalink=TRUE)
+### Zipping results and deleting files
+zip(paste("result_",time_suffix,".zip",sep=""),files=list.files(include.dirs=TRUE))
+unlink(list.files(include.dirs=TRUE), recursive = TRUE,force=FALSE)
+
+
+#-------------------------------- File logging closing --------------------------------#
+if (enable_file_logging == TRUE)
+  {
+  sink()
+  }  
+	  
+rciop.publish(getwd(), recursive=FALSE, metalink=TRUE)
 #res.final <- rciop.publish(TMPDIR, recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=TRUE)
 
