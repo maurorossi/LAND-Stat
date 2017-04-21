@@ -2817,7 +2817,7 @@ if (enable_file_logging == TRUE)
   sink()
   }  
 	  
-rciop.publish(getwd(), recursive=FALSE, metalink=TRUE)
+rciop.publish(getwd(), recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(TMPDIR, recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=TRUE)
 
