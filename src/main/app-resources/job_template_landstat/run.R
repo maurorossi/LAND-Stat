@@ -204,9 +204,9 @@ range(data.series,na.rm=TRUE)
 
 
 ##################### WPS eSA modification
-old_dir<-getwd()
-dir.create(paste(getwd(),"/Results",sep=""))
-setwd(paste(getwd(),"/Results",sep=""))
+#old_dir<-getwd()
+#dir.create(paste(getwd(),"/Results",sep=""))
+#setwd(paste(getwd(),"/Results",sep=""))
 
 #### Box Plot
 centers<-1:dim(data.series)[2]
