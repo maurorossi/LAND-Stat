@@ -202,8 +202,11 @@ str(data.series)
 names(data.series)
 range(data.series,na.rm=TRUE)
 
-dir.create(paste(getwd(),"/Results",sep=""))
-setwd(paste(getwd(),"/Results",sep=""))
+
+##################### WPS eSA modification
+#old_dir<-getwd()
+#dir.create(paste(getwd(),"/Results",sep=""))
+#setwd(paste(getwd(),"/Results",sep=""))
 
 #### Box Plot
 centers<-1:dim(data.series)[2]
@@ -2806,9 +2809,6 @@ if(executing_CDF_sensitivity_analysis==TRUE)
   dev.off()
   }
 
-### Zipping results and deleting files
-zip(paste("result_",time_suffix,".zip",sep=""),files=list.files(include.dirs=TRUE))
-unlink(list.files(include.dirs=TRUE), recursive = TRUE,force=FALSE)
 
 
 #-------------------------------- File logging closing --------------------------------#
@@ -2816,7 +2816,18 @@ if (enable_file_logging == TRUE)
   {
   sink()
   }  
-	  
+
+# ### Zipping results and deleting files
+# zip(paste("result_",time_suffix,".zip",sep=""),files=list.files(include.dirs=TRUE))
+# unlink(list.files(include.dirs=TRUE), recursive = TRUE,force=FALSE)
+# rciop.publish(getwd(), recursive=TRUE, metalink=TRUE)
+
+	
+### Zipping results and deleting files
+#zip(paste(old_dir,"/result_",time_suffix,".zip",sep=""),files=list.files(getwd(),pattern="",include.dirs=FALSE,recursive=FALSE,full.names=FALSE))
+#unlink(getwd(),recursive=TRUE)
+#rciop.publish(old_dir, recursive=TRUE, metalink=TRUE)
+
 rciop.publish(getwd(), recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(TMPDIR, recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=TRUE)
