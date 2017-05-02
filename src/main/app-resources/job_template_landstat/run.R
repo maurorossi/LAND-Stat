@@ -2828,6 +2828,11 @@ if (enable_file_logging == TRUE)
 #unlink(getwd(),recursive=TRUE)
 #rciop.publish(old_dir, recursive=TRUE, metalink=TRUE)
 
+### Zipping results and deleting files
+list_files_uncompressed<-list.files(getwd(),pattern="",include.dirs=FALSE,recursive=FALSE,full.names=TRUE)
+zip(paste("result_",time_suffix,".zip",sep=""),files=list_files_uncompressed)
+unlink(list_files_uncompressed, recursive = TRUE,force=FALSE)
+
 rciop.publish(getwd(), recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(TMPDIR, recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=TRUE)
