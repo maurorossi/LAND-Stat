@@ -2835,7 +2835,7 @@ zip(paste("result_",time_suffix,".zip",sep=""),files=list_files_uncompressed)
 #unlink(list_files_uncompressed, recursive = TRUE,force=FALSE)
 
 #rciop.publish(getwd(), recursive=TRUE, metalink=TRUE)
-rciop.publish(paste("result_",time_suffix,".zip",sep=""), recursive=FALSE, metalink=TRUE)
+rciop.publish(paste(getwd(),"/result_",time_suffix,".zip",sep=""), recursive=FALSE, metalink=TRUE)
 
 #res.final <- rciop.publish(TMPDIR, recursive=TRUE, metalink=TRUE)
 #res.final <- rciop.publish(paste(TMPDIR,"output", sep="/"), recursive=TRUE, metalink=TRUE)
